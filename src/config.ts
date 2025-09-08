@@ -30,7 +30,7 @@ export const LICENSE = "MIT licensed.";
 // will be used to identify your bluesky account, so that likes and comments can be shown on your posts
 export const BLUESKY_IDENTIFIER = "hunglongtran.bsky.social";
 
-export const SOURCE_LINK = 'https://github.com/flo-bit/blog-template';
+export const SOURCE_LINK = 'https://github.com/hunglongtrangithub/blogs';
 
 // will be used to set the base color of the blog
 export const BASE_COLOR: BaseColor = "neutral";
