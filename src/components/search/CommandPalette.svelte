@@ -41,7 +41,7 @@
       // replace <mark> tags with <span class="bg-pink-600/10">
       excerpt = excerpt.replaceAll(
         "<mark>",
-        '<span class="bg-accent-500/20 rounded-md p-0.5">'
+        '<span class="bg-accent-500/20 rounded-md p-0.5">',
       );
       excerpt = excerpt.replaceAll("</mark>", "</span>");
 
@@ -68,7 +68,8 @@
   async function setupSearch() {
     try {
       // @ts-ignore
-      pagefind = await import(/* @vite-ignore */
+      pagefind = await import(
+        /* @vite-ignore */
         BASE + "/pagefind/pagefind.js"
       );
     } catch (error) {
@@ -76,7 +77,9 @@
     }
   }
 
-  setupSearch();
+  if (import.meta.env.PROD) {
+    setupSearch();
+  }
 
   let input: HTMLInputElement;
 

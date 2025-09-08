@@ -5,7 +5,7 @@ import { atUriToPostUri, getComments, getLikes } from "./utils";
 import Likes from "./Likes.svelte";
 import Comments from "./Comments.svelte";
 
-let posts = await getCollection("posts");
+let posts = import.meta.env.PROD ? await getCollection("posts") : [];
 
 const canonicalURL = new URL(Astro.url.pathname, SITE);
 

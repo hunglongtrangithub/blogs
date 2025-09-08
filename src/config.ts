@@ -66,7 +66,7 @@ export const SOCIAL_LINKS: {
 export const MANUAL_DARK_MODE = true;
 
 // if true, will enable the search functionality
-export const SEARCH_ENABLED = true;
+export const SEARCH_ENABLED = import.meta.env.PROD;
 
 // if true, will show images in the posts
 export const SHOW_IMAGES = true;

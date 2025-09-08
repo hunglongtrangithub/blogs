@@ -9,7 +9,6 @@ import sitemap from "@astrojs/sitemap";
 import tailwind from "@astrojs/tailwind";
 import svelte from "@astrojs/svelte";
 import { pagefind } from "vite-plugin-pagefind";
-import type { PluginOption } from "vite";
 
 import { BASE, SITE } from "./src/config.ts";
 
@@ -36,15 +35,17 @@ export default defineConfig({
         $content: resolve("./src/content"),
       },
     },
-    ssr: {
-      noExternal: [BASE + "/pagefind/pagefind.js"],
-    },
-    plugins: [pagefind() as PluginOption],
-    build: {
-      rollupOptions: {
-        external: [BASE + "/pagefind/pagefind.js"],
+    ...(import.meta.env.PROD ? {
+      ssr: {
+        noExternal: [BASE + "/pagefind/pagefind.js"],
       },
-    },
+      plugins: [pagefind()],
+      build: {
+        rollupOptions: {
+          external: [BASE + "/pagefind/pagefind.js"],
+        },
+      },
+    } : {})
   },
 
   integrations: [
