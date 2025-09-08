@@ -22,7 +22,7 @@ export const SITE_DESCRIPTION = "A place to keep my written thoughts.";
 export const SITE_FAVICON = "🌱";
 
 // will be used in the footer as the name of the author (c) <YEAR> <NAME> - LICENSE
-export const NAME = "flo-bit";
+export const NAME = "thucvatbietnoi";
 
 // will be used in the footer as the license of the content (e.g. "All right reserved" or "CC-BY-SA 4.0")
 export const LICENSE = "MIT licensed.";
@@ -52,8 +52,10 @@ export const SOCIAL_LINKS: {
   SHOW_RSS?: boolean;
 } = {
   SHOW_RSS: true,
-  BLUESKY_URL: "https://bsky.app/profile/flo-bit.dev",
+  BLUESKY_URL: "https://bsky.app/profile/hunglongtran.bsky.social",
   GITHUB_URL: "https://github.com/hunglongtrangithub",
+  LINKEDIN_URL: "https://www.linkedin.com/in/hunglongtran/",
+  // YOUTUBE_URL: "https://www.youtube.com/@longhungtran6231",
   EMAIL: "hunglongtran2004@gmail.com",
 };
 
