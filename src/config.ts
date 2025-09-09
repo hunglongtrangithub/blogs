@@ -22,7 +22,7 @@ export const SITE_DESCRIPTION = "A place to keep my written thoughts.";
 export const SITE_FAVICON = "🌱";
 
 // will be used in the footer as the name of the author (c) <YEAR> <NAME> - LICENSE
-export const NAME = "thucvatbietnoi";
+export const NAME = "Hung Tran";
 
 // will be used in the footer as the license of the content (e.g. "All right reserved" or "CC-BY-SA 4.0")
 export const LICENSE = "MIT licensed.";
