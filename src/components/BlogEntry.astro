@@ -4,6 +4,16 @@ import FormattedDate from "./FormattedDate.astro";
 import Tag from "./Tag.astro";
 import HeroImage from "./HeroImage.astro";
 
+type Props = {
+  title: string;
+  description: string;
+  pubDate: Date;
+  slug: string;
+  heroImage?: string;
+  tags?: string[];
+  noImage?: boolean;
+};
+
 const { title, description, pubDate, slug, heroImage, tags, noImage } =
   Astro.props;
 ---
@@ -18,7 +28,7 @@ const { title, description, pubDate, slug, heroImage, tags, noImage } =
   }
   <div>
     <div class={"flex items-center gap-x-4 text-xs"}>
-      <time datetime={pubDate} class="text-base-500 shrink-0">
+      <time datetime={pubDate.toString()} class="text-base-500 shrink-0">
         <FormattedDate date={pubDate} />
       </time>
       <div class="flex gap-2 flex-wrap">

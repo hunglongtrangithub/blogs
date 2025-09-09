@@ -5,6 +5,11 @@ import { atUriToPostUri, getComments, getLikes } from "./utils";
 import Likes from "./Likes.svelte";
 import Comments from "./Comments.svelte";
 
+interface Props {
+  disableComments?: boolean;
+  disableLikes?: boolean;
+}
+
 let posts = import.meta.env.PROD ? await getCollection("posts") : [];
 
 const canonicalURL = new URL(Astro.url.pathname, SITE);

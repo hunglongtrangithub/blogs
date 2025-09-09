@@ -9,9 +9,19 @@ import BlogEntry from "$components/BlogEntry.astro";
 import Pagination from "$components/Pagination.astro";
 import ProseWrapper from "./ProseWrapper.astro";
 import BigBlogEntry from "$components/BigBlogEntry.astro";
+import type { InferEntrySchema, RenderedContent } from "astro:content";
+
+type Post = {
+    id: string;
+    body?: string;
+    collection: "blog";
+    data: InferEntrySchema<"blog">;
+    rendered?: RenderedContent;
+    filePath?: string;
+}
 
 type Props = {
-  posts: Array<any>;
+  posts: Post[];
   totalPages: number;
   currentPage: number;
   tag?: string;

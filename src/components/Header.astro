@@ -15,6 +15,10 @@ import CodeCopyButton from "./CodeCopyButton.astro";
 import CommandPalette from "./search/CommandPalette.svelte";
 import Search from "./search/Search.svelte";
 
+interface Props {
+  active: "blog" | "about";
+}
+
 const { active } = Astro.props;
 ---
 

@@ -1,6 +1,12 @@
 ---
 import { BASE } from "../config.ts";
 
+type Props = {
+  index: number;
+  active: boolean;
+  tag?: string;
+};
+
 const { index, active, tag } = Astro.props;
 ---
 

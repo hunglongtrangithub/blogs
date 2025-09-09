@@ -2,6 +2,10 @@
 import { colorBaseClasses, colorAccentClasses } from "src/colors";
 import { ACCENT_COLOR, BASE_COLOR } from "../config.ts";
 
+interface Props {
+  class?: string;
+}
+
 const { class: className } = Astro.props;
 ---
 
