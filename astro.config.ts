@@ -35,17 +35,19 @@ export default defineConfig({
         $content: resolve("./src/content"),
       },
     },
-    ...(import.meta.env.PROD ? {
-      ssr: {
-        noExternal: [BASE + "/pagefind/pagefind.js"],
-      },
-      plugins: [pagefind()],
-      build: {
-        rollupOptions: {
-          external: [BASE + "/pagefind/pagefind.js"],
-        },
-      },
-    } : {})
+    ...(import.meta.env.PROD
+      ? {
+          ssr: {
+            noExternal: [BASE + "/pagefind/pagefind.js"],
+          },
+          plugins: [pagefind()],
+          build: {
+            rollupOptions: {
+              external: [BASE + "/pagefind/pagefind.js"],
+            },
+          },
+        }
+      : {}),
   },
 
   integrations: [

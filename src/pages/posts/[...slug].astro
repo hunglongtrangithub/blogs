@@ -13,7 +13,7 @@ import { SHOW_IMAGES } from "../../config.ts";
 
 export async function getStaticPaths() {
   const posts = await getBlogPosts(true);
-  return posts.map((post: any) => ({
+  return posts.map((post) => ({
     params: { slug: post.id },
     props: post,
   }));

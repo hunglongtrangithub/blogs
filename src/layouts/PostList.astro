@@ -35,7 +35,7 @@ const { posts, totalPages, currentPage, tag, showFeatured } = Astro.props;
     }
     <div class="my-14 space-y-16 max-w-3xl">
       {
-        posts.map((post: any, index: number) =>
+        posts.map((post, index) =>
           index > 0 || !showFeatured ? (
             <BlogEntry {...post.data} slug={post.id} />
           ) : null
