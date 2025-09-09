@@ -12,12 +12,12 @@ import BigBlogEntry from "$components/BigBlogEntry.astro";
 import type { InferEntrySchema, RenderedContent } from "astro:content";
 
 type Post = {
-    id: string;
-    body?: string;
-    collection: "blog";
-    data: InferEntrySchema<"blog">;
-    rendered?: RenderedContent;
-    filePath?: string;
+  id: string;
+  body?: string;
+  collection: "blog";
+  data: InferEntrySchema<"blog">;
+  rendered?: RenderedContent;
+  filePath?: string;
 }
 
 type Props = {
@@ -37,12 +37,18 @@ const { posts, totalPages, currentPage, tag, showFeatured } = Astro.props;
     <ProseWrapper class="pb-8">
       <slot />
     </ProseWrapper>
-
-    {
-      showFeatured ? (
-        <BigBlogEntry {...posts[0].data} slug={posts[0].id} />
-      ) : null
-    }
+    { posts.length === 0 ? (
+      <p class="text-center text-gray-600 dark:text-gray-400">
+        No posts found. Please check back later!
+      </p>
+    ) : (
+      <>
+        {
+          showFeatured ? (
+            <BigBlogEntry {...posts[0].data} slug={posts[0].id} />
+          ) : null
+        }
+      </>
     <div class="my-14 space-y-16 max-w-3xl">
       {
         posts.map((post, index) =>
@@ -52,6 +58,7 @@ const { posts, totalPages, currentPage, tag, showFeatured } = Astro.props;
         )
       }
     </div>
+    )}
 
     {
       totalPages > 1 ? (
