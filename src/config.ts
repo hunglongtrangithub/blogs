@@ -36,7 +36,7 @@ export const SOURCE_LINK = 'https://github.com/hunglongtrangithub/blogs';
 export const BASE_COLOR: BaseColor = "neutral";
 
 // will be used to set the accent color of the blog
-export const ACCENT_COLOR: AccentColor = "cyan";
+export const ACCENT_COLOR: AccentColor = "green";
 
 // will show all icons that are not empty in the footer as links
 export const SOCIAL_LINKS: {
