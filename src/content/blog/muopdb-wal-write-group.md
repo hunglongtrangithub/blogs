@@ -96,7 +96,7 @@ However, `tokio-uring` requires a separate runtime from Tokio, and it is only co
 
 Another promising approach is to use separate background threads to handle WAL sync.
 Each write request would write the WAL entry to the OS's page cache with `write()`, and one or more separate threads would periodically flush to disk with `fdatasync()`, either periodically or on demand. This approach has the benefit of batching multiple WAL entries into a single `fdatasync()` call, which improves throughput.
-This is what Hieu Pham did in this [PR](https://github.com/hicder/muopdb/pull/531), spawning a separate group of threads for WAL syncing that wakes up every 100 ms to sync the WAL files.
+This is what [Hieu Pham](https://github.com/hicder) did in this [PR](https://github.com/hicder/muopdb/pull/531), spawning a separate group of threads for WAL syncing that wakes up every 100 ms to sync the WAL files.
 
 However, there is substantial overhead in switching between threads in a high-throughput networking service.
 You also have to be careful with how you wake up the sync threads.
@@ -306,6 +306,8 @@ The timeout logic in the follower looks like this:
 
 ```rust
 
+const TIMEOUT_DURATION: Duration = Duration::from_millis(10);
+
 // This task will be the follower and join the current group.
 let (seq_tx, mut seq_rx) = oneshot::channel();
 
@@ -325,7 +327,7 @@ current_group.entries.push(GroupEntry {
 let is_first_follower = follower_entry_id == 0;
 
 // Follower waits for leader, but can become leader on timeout
-let result = tokio::time::timeout(Duration::from_millis(10), seq_rx).await;
+let result = tokio::time::timeout(TIMEOUT_DURATION, seq_rx).await;
 match result {
     Ok(Ok(seq_no)) => Ok(seq_no), // got seq_no from leader
     Ok(Err(_)) => Err(...),      // leader dropped
@@ -356,7 +358,7 @@ tokio::select! {
         let follower_seq_no = result.expect("WAL follower: leader's sender dropped");
         Ok(follower_seq_no)
     }
-    _ = tokio::time::sleep(Duration::from_millis(10)) => {
+    _ = tokio::time::sleep(TIMEOUT_DURATION) => {
         // Timeout: check if I'm the first follower
         if is_first_follower {
             // Become leader, process group, notify others
@@ -399,6 +401,7 @@ Either way, the `sync-on-batch` approach brought significant improvement in WAL 
 It was a fun challenge to implement WAL write groups under the Tokio async context.
 It took me a few iterations to get the design right, especially with the concurrent access to the write coordinator and handling timeouts.
 After that, the actual implementation was fairly straightforward.
+In my implementation, the timeout duration and group size are two tunable parameters that can be adjusted to adjust the trade-off between throughput and latency.
 
 In the first benchmark run, I set the timeout to 100 ms, which turned out to be the bottleneck.
 Since the WAL group size is 940 and the total number of tasks is 1000, the last group only has 60 entries.
@@ -406,7 +409,13 @@ With a timeout of 100 ms, the last group took 100 ms to complete, which made the
 After reducing the timeout to 10 ms, the total time dropped to around 37 ms.
 I also experimented with different group sizes (1 to 1000), and found the best performance at 940.
 
-For my implementation, the timeout duration and group size are two tunable parameters that can be adjusted to adjust the trade-off between throughput and latency.
+Before my implementation, the data, user ID, and doc ID were passed as slices (`&[T]` type).
+Now with the write group approach, we need lifetime annotations to ensure that the data lives long enough for the leader to process it.
+Also, the slices might need to be accessed concurrently by multiple tasks.
+To avoid lifetime issues, I changed the data types to `Arc<T]>`, which adds some overhead due to atomic reference counting, but I think it's worth it for the simplicity.
+At least it's better than copying the data for every write request 🙂.
+This [YouTube video](https://youtu.be/A4cKi7PTJSs?feature=shared) by Logan Smith suggested me this approach.
+
 This was a great learning experience for me in doing system programming in Rust.
 I want to give a shout-out to Hieu Pham for suggesting this idea and helping review my PRs.
 If you're interested, you can check out my first iteration of the implementation in this [PR](https://github.com/hicder/muopdb/pull/533).
