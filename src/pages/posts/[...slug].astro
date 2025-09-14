@@ -10,6 +10,7 @@ import { getBlogPosts } from "src/utils";
 import BlueskyLikes from "$components/bluesky/BlueskyLikes.astro";
 import Tag from "$components/Tag.astro";
 import { SHOW_IMAGES } from "../../config.ts";
+import CodeBlock from "$components/CodeBlock.astro";
 
 export async function getStaticPaths() {
   const posts = await getBlogPosts(true);
@@ -59,7 +60,7 @@ if (replacedHero && !images[replacedHero])
       </div>
 
       <h1 class="mt-4">{post.data.title}</h1>
-      <Content />
+      <Content components={{pre: CodeBlock}}/>
 
       <BlueskyLikes
         disableLikes={post.data.disableLikes}
