@@ -114,7 +114,7 @@ What we need is an approach that:
 
 ### Basic Idea
 
-Hieu Pham suggested that I use a "write group" approach, inspired by RocksDB.
+Hieu Pham suggested that I use a "write group" approach, inspired by [RocksDB](https://rocksdb.org/).
 The idea is that incoming threads put their write requests into a queue.
 The first enqueued thread becomes the **leader** and batches together consecutive followers in the queue into a group under a mutex.
 The leader thread writes all of the WAL entries from all threads in the group (including its own) to the WAL file, and then performs WAL sync once.
@@ -278,9 +278,9 @@ impl Collection {
             // Create a new entry in the current group
             current_group.entries.push(GroupEntry {
                 args: AppendArgs {
-                    doc_ids: doc_ids.clone(),
-                    user_ids: user_ids.clone(),
-                    op_type: wal_op_type.clone(),
+                    doc_ids,
+                    user_ids,
+                    op_type: wal_op_type,
                 },
                 seq_tx,
             });
@@ -390,7 +390,7 @@ Here's the benchmark result after running on my Macbook Pro 2021 (M1, 10-core CP
 | WalInsertion/WalInsertion/1000 | 116.47 4.3±0.20s | 9.02 335.5±84.68ms | 1.00 37.2±0.51ms |
 
 The `sync-on-batch` approach is **9x faster** than the `sync-background` approach, and **more than 100x** faster than the original `sync-on-write` approach.
-Hieu Pham's benchmarks on Linux showed better performance for `sync-background` (166 ms) and slightly better performance for `sync-on-batch` (32 ms), which led to **5x performance** boost.
+Hieu Pham's benchmarks on Linux showed better performance for `sync-background` (166 ms) and slightly better performance for `sync-on-batch` (32 ms), which equates to a **5x performance** boost.
 I think the difference is due to the underlying hardware and file system.
 Either way, the `sync-on-batch` approach brought significant improvement in WAL write throughput.
 
