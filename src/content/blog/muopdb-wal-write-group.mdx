@@ -30,7 +30,7 @@ This duration is too long for saving database WAL data, where new write requests
 If the system crashes before the WAL entries are persisted to disk, all of that data is lost.
 Thus, after writing all of the WAL entry's bytes to the WAL file, we use the `fsync()` (or `fdatasync()`) [^2] system call to force the WAL entries' data to disk.
 
-[^1]: From section 40.7, Caching and Buffering in OSTEP
+[^1]: From section 40.7, Caching and Buffering in [the OSTEP book](https://pages.cs.wisc.edu/~remzi/OSTEP/)
 
 [^2]:
     Technically `fdatasync()` is preferred over `fsync()` since it only flushes the file data and not the metadata, which is faster.
