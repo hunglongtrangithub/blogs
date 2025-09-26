@@ -412,7 +412,7 @@ I also experimented with different group sizes (1 to 1000), and found the best p
 Before my implementation, the data, user ID, and doc ID were passed as slices (`&[T]` type).
 Now with the write group approach, we need lifetime annotations to ensure that the data lives long enough for the leader to process it.
 Also, the slices might need to be accessed concurrently by multiple tasks.
-To avoid lifetime issues, I changed the data types to `Arc<T]>`, which adds some overhead due to atomic reference counting, but I think it's worth it for the simplicity.
+To avoid lifetime issues, I changed the data types to `Arc<[T]>`, which adds some overhead due to atomic reference counting, but I think it's worth it for the simplicity.
 At least it's better than copying the data for every write request 🙂.
 This [YouTube video](https://youtu.be/A4cKi7PTJSs?feature=shared) by Logan Smith suggested me this approach.
 
