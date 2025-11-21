@@ -500,7 +500,6 @@ Note that using `printf`, which writes data to `stdout`, also has that line-buff
 <a name="stdin-flush"></a>
 Interestingly, making a read from stdin will flush all existing content from
 stdout for you. This is useful when prompting for user input, for example:
-^f3a992
 
 ```c
 #include <stdio.h>
@@ -800,7 +799,7 @@ DEF_STDFILE(_IO_2_1_stdout_, 1, &_IO_2_1_stdin_, _IO_NO_READS);
 DEF_STDFILE(_IO_2_1_stderr_, 2, &_IO_2_1_stdout_, _IO_NO_READS+_IO_UNBUFFERED);
 ```
 
-From [`stdfiles.c`](https://github.com/bminor/glibc/blob/master/libio/stdfiles.c) we can see that for the globals `stdin`, `stdout`, and `stderr`, their respective `_IO_2_1_stdin_`, `_IO_2_1_stdout_`, and `_IO_2_1_stderr_` are initialized as `_IO_FILE_plus` structs. We also see that the file descriptor is 0 for stdin , 1 for stdout, and 2 for stderr. Interestingly, stdin is chained with stdout (by assigning the `struct _IO_FILE *_chain` member of `FILE`). Maybe this attributes to how we see the behavior we see in [here](#stdin-flush). Also, stderr has `_IO_UNBUFFERED` flag, which explains the unbuffered IO behavior of stderr, unlike stdout.
+From [`stdfiles.c`](https://github.com/bminor/glibc/blob/master/libio/stdfiles.c) we can see that for the globals `stdin`, `stdout`, and `stderr`, their respective `_IO_2_1_stdin_`, `_IO_2_1_stdout_`, and `_IO_2_1_stderr_` are initialized as `_IO_FILE_plus` structs. We also see that the file descriptor is 0 for stdin , 1 for stdout, and 2 for stderr. Interestingly, stdin is chained with stdout (by assigning the `struct _IO_FILE *_chain` member of `FILE`). Maybe this attributes to how we see the behavior in [here](#stdin-flush). Also, stderr has `_IO_UNBUFFERED` flag, which explains the unbuffered IO behavior of stderr, unlike stdout.
 
 You might guess the `_IO_file_jumps` is the v-table assigned to all the 3 file structs. In fact, it is:
 
