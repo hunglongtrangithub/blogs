@@ -228,7 +228,7 @@ impl FileDesc {
 }
 ```
 
-But does `libc::read` or `libc::write` initialize buffers? If not, how do functions in `libc` like `printf`, `fwrite`, `fread`, and many others have buffered IO? With these questions flying around in my head, I decided to look at `glibc`'s source code to find out myself 🫠. Brace yourself. It's gonna be quite a journey.
+But does `libc::read` or `libc::write` initialize buffers? If not, how do functions in `libc` like `printf`, `fwrite`, `fread`, and many others have buffered IO? With these questions flying around in my head, I decided to look at [`glibc`](https://github.com/bminor/glibc)'s source code to find out myself 🫠. Brace yourself. It's gonna be quite a journey.
 
 ## C IO Buffering
 
@@ -542,7 +542,7 @@ So `fwrite` does buffer its data, and automatically flushes the current data whe
 
 ### Buffer allocation
 
-From looking around the codebase, I came across this [`fileops.c`](github.com/bminor/glibc/blob/master/libio/genops.c) and [`genops.c`](https://github.com/bminor/glibc/blob/master/libio/genops.c) which contain various functions for `FILE` struct. I have discovered things like [`_IO_default_allocate`](https://github.com/bminor/glibc/blob/92186652d8653993ca51e97b895baf7edc745794/libio/genops.c#L503), [`_IO_setb`](https://github.com/bminor/glibc/blob/92186652d8653993ca51e97b895baf7edc745794/libio/genops.c#L354), [`_IO_doallocbuf`](https://github.com/bminor/glibc/blob/92186652d8653993ca51e97b895baf7edc745794/libio/genops.c#L368), and [`_IO_file_doallocate`](https://github.com/bminor/glibc/blob/92186652d8653993ca51e97b895baf7edc745794/libio/filedoalloc.c#L67), which look like they are associated with buffer initialization.
+From looking around the codebase, I came across this [`fileops.c`](https://github.com/bminor/glibc/blob/master/libio/fileops.c) and [`genops.c`](https://github.com/bminor/glibc/blob/master/libio/genops.c) which contain various functions for `FILE` struct. I have discovered things like [`_IO_default_allocate`](https://github.com/bminor/glibc/blob/master/libio/genops.c#L503), [`_IO_setb`](https://github.com/bminor/glibc/blob/master/libio/genops.c#L354), [`_IO_doallocbuf`](https://github.com/bminor/glibc/blob/master/libio/genops.c#L368), and [`_IO_file_doallocate`](https://github.com/bminor/glibc/blob/master/libio/filedoalloc.c#L67), which look like they are associated with buffer initialization.
 
 First, take a look at `_IO_file_doallocate`:
 
@@ -874,7 +874,7 @@ const struct _IO_jump_t __io_vtables[] attribute_relro =
 };
 ```
 
-[`__io_vtables`](https://github.com/bminor/glibc/blob/92186652d8653993ca51e97b895baf7edc745794/libio/vtables.c#L92) holds all functions for different kinds of IO. I guess this is how people implement polymorphism for `FILE` in C. Every `FILE` pointer is created so that it sits next to a pointer to a corresponding v-table in memory.
+[`__io_vtables`](https://github.com/bminor/glibc/blob/master/libio/vtables.c#L92) holds all functions for different kinds of IO. I guess this is how people implement polymorphism for `FILE` in C. Every `FILE` pointer is created so that it sits next to a pointer to a corresponding v-table in memory.
 
 Coming back to `xsputn`, we can see that the `xsputn` member declaration aligns in both `__io_vtables[IO_FILE_JUMPS]` and `_IO_jump_t` definition. So we are confident that the `_IO_sputn` call for `stdout` leads to `_IO_file_xsputn`. Let's see how `_IO_file_xsputn` is implemented.
 
